@@ -1,0 +1,21 @@
+<div>
+    <button (click)="store.setFilter('all')" [class.active]="store.filter() === 'all'">All</button>
+    <button (click)="store.setFilter('active')" [class.active]="store.filter() === 'active'">Active</button>
+    <button (click)="store.setFilter('completed')" [class.active]="store.filter() === 'completed'">completed</button>
+</div>
+<ul>
+    @if(store.filteredTodos().length === 0) {
+        <li>No todos to show</li>
+    }
+    @else {
+    @for(todo of store.filteredTodos(); track todo.id) {
+        
+        <app-todo-item [todo]="todo" (toggle)="store.toggle($event)" (delete)="store.delete($event)"></app-todo-item>
+    }
+}
+
+</ul>
+<div>
+    <p>Active: {{ store.activeCount() }}</p>
+    <p>completed: {{ store.completedCount() }}</p>
+</div>

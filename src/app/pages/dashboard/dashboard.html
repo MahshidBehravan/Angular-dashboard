@@ -1,0 +1,50 @@
+<h2>Dashboard (Signals)</h2>
+
+<section style="display:flex; gap:12px; align-items:center; margin-bottom:16px;">
+  <button (click)="dec()">-</button>
+  <strong>Counter: {{ store.counter() }}</strong>
+  <button (click)="inc()">+</button>
+
+  <button (click)="reload()" [disabled]="store.loading()" style="margin-left:16px;">
+    Reload
+  </button>
+</section>
+
+<section style="margin-bottom:16px;">
+  <input
+  #searchInput
+    type="text"
+    placeholder="Search todos..."
+   [value]="store.searchTerm()"
+  (input)="onSearch(searchInput.value)"
+    style="width:280px;"
+  />
+  <small style="margin-left:10px;">
+    Debounced: <b>{{ store.debouncedSearchTerm() }}</b>
+  </small>
+</section>
+
+<section style="display:flex; gap:16px; margin-bottom:16px;">
+  <div>Total: <b>{{ store.total() }}</b></div>
+  <div>Done: <b>{{ store.doneCount() }}</b></div>
+</section>
+
+@if (store.loading()) {
+  <p>Loading...</p>
+} @else if (store.error()) {
+  <p style="color:crimson;">{{ store.error() }}</p>
+  <button (click)="reload()">Try again</button>
+} @else {
+  @if (store.filteredTodos().length === 0) {
+    <p>No results.</p>
+  } @else {
+    <ul>
+      @for (t of store.filteredTodos(); track t.id) {
+        <li style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" [checked]="t.completed" disabled />
+          <span>{{ t.title }}</span>
+        </li>
+      }
+    </ul>
+  }
+}

@@ -1,0 +1,5 @@
+<li>
+    <input type="checkbox" [checked]="todo().completed" (change)="toggle.emit(todo().id)">
+    {{ todo().title }}
+    <button (click)="delete.emit(todo().id)">Delete</button>
+</li>
