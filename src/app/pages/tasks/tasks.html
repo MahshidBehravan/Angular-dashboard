@@ -1,0 +1,52 @@
+<h2>Tasks</h2>
+
+<section style="display:flex; gap:12px; align-items:center; margin-bottom:16px;">
+  <button (click)="reload()" [disabled]="store.loading()">Reload</button>
+</section>
+
+<section style="margin-bottom:16px;">
+  <input
+    #q
+    type="text"
+    placeholder="Search tasks..."
+    [value]="store.searchTerm()"
+    (input)="store.searchTerm.set(q.value)"
+    style="width:280px;"
+  />
+  <small style="margin-left:10px;">
+    Debounced: <b>{{ store.debouncedSearchTerm() }}</b>
+  </small>
+</section>
+
+<section style="display:flex; gap:8px; margin-bottom:16px;">
+  <button (click)="store.filter.set('all')" [class.active]="store.filter() === 'all'">All</button>
+  <button (click)="store.filter.set('active')" [class.active]="store.filter() === 'active'">Active</button>
+  <button (click)="store.filter.set('completed')" [class.active]="store.filter() === 'completed'">Completed</button>
+</section>
+
+<section style="display:flex; gap:16px; margin-bottom:16px;">
+  <div>Total: <b>{{ store.total() }}</b></div>
+  <div>Active: <b>{{ store.completedCount() }}</b></div>
+  <div>Completed: <b>{{ store.completedCount() }}</b></div>
+  <div>Done %: <b>{{ store.donePercent() }}</b>%</div>
+</section>
+
+@if (store.loading()) {
+  <p>Loading tasks...</p>
+} @else if (store.error()) {
+  <p>Error loading tasks: {{ store.error() }}</p>
+  <button (click)="reload()">Try again</button>
+} @else {
+  @if (store.visibleTasks().length === 0) {
+    <p>No tasks found.</p>
+  } @else {
+    <ul>
+      @for (t of store.visibleTasks(); track t.id) {
+        <li style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" [checked]="t.completed" disabled />
+          <span>{{ t.title }}</span>
+        </li>
+      }
+    </ul>
+  }
+}
